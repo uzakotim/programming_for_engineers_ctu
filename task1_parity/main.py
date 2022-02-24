@@ -20,10 +20,13 @@ def main():
 
     right = [ [0]*columns for i in range(rows)]
     # right
-    stored = None
     for i in range(rows):
+        stored = None
         for j in range(columns): 
             reversed_index = columns-1-j
+            if stored == -1:
+                right[i][reversed_index] = 0
+                continue
             if j==2:
                 if matrix[i][reversed_index+1] == matrix[i][reversed_index+2] and matrix[i][reversed_index+1] == 0:
                     stored = 0
@@ -47,11 +50,14 @@ def main():
                     right[i][reversed_index] = 0 #mixed
 
     left = [ [0]*columns for i in range(rows)]
-    # left
-    stored = None              
+    # left      
     for i in range(rows):
+        stored = None
         for j in range(columns): 
             reversed_index = j
+            if stored == -1:
+                left[i][reversed_index]=0
+                continue
             if j==2:
                 if matrix[i][reversed_index-1] == matrix[i][reversed_index-2] and matrix[i][reversed_index-1] == 0:
                     stored = 0
@@ -76,10 +82,13 @@ def main():
                    
     up = [ [0]*columns for i in range(rows)]
     # up
-    stored = None
     for j in range(columns):
+        stored = None
         for i in range(rows): 
             reversed_index = i
+            if stored == -1:
+                up[reversed_index][j] = 0
+                continue
             if i==2:
                 if matrix[reversed_index-1][j] == matrix[reversed_index-2][j] and matrix[reversed_index-1][j] == 0:
                     stored = 0
@@ -104,10 +113,13 @@ def main():
  
     down = [ [0]*columns for i in range(rows)]
     # down
-    stored = None
     for j in range(columns):
+        stored = None
         for i in range(rows): 
             reversed_index = rows-1-i
+            if stored == -1:
+                down[reversed_index][j] = 0
+                continue
             if i==2:
                 if matrix[reversed_index+1][j] == matrix[reversed_index+2][j] and matrix[reversed_index+1][j] == 0:
                     stored = 0
@@ -129,6 +141,7 @@ def main():
                 elif matrix[reversed_index+1][j] != stored:
                     stored = -1
                     down[reversed_index][j] = 0 #mixed
+
     left_np = np.array(left)
     right_np = np.array(right)
     up_np = np.array(up)
