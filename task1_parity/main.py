@@ -12,70 +12,142 @@ def main():
     # Input parameters
     rows, columns = list(map(int,input().split()))
     matrix = []
-    number_of_cells = 2
     output = ''
 
     # Storing matrix and conversion to sparity form 
     matrix = [list(map(parity,input().split())) for i in range(rows)]
-    matrix_np = np.array(matrix) #for processing
+    matrix_np = np.array(matrix)
 
-    # Comparing parity of vectors in the 4 directions
-    
+    right = [ [0]*columns for i in range(rows)]
+    # right
+    stored = None
+    for i in range(rows):
+        for j in range(columns): 
+            reversed_index = columns-1-j
+            if j==2:
+                if matrix[i][reversed_index+1] == matrix[i][reversed_index+2] and matrix[i][reversed_index+1] == 0:
+                    stored = 0
+                    right[i][reversed_index] = 1 # even
+                if matrix[i][reversed_index+1] == matrix[i][reversed_index+2] and matrix[i][reversed_index+1] == 1:
+                    stored = 1
+                    right[i][reversed_index] = 1 #odd
+                elif matrix[i][reversed_index+1] != matrix[i][reversed_index+2]:
+                    stored = -1
+                    right[i][reversed_index] = 0 #mixed
+
+            if j>=3:
+                if matrix[i][reversed_index+1] == stored and stored == 0:
+                    stored = 0
+                    right[i][reversed_index] = 1 #even
+                elif matrix[i][reversed_index+1] == stored and stored == 1:
+                    stored = 1
+                    right[i][reversed_index] = 1 #odd
+                elif matrix[i][reversed_index+1] != stored:
+                    stored = -1
+                    right[i][reversed_index] = 0 #mixed
+
+    left = [ [0]*columns for i in range(rows)]
+    # left
+    stored = None              
+    for i in range(rows):
+        for j in range(columns): 
+            reversed_index = j
+            if j==2:
+                if matrix[i][reversed_index-1] == matrix[i][reversed_index-2] and matrix[i][reversed_index-1] == 0:
+                    stored = 0
+                    left[i][reversed_index] = 1 #even
+                if matrix[i][reversed_index-1] == matrix[i][reversed_index-2] and matrix[i][reversed_index-1] == 1:
+                    stored = 1
+                    left[i][reversed_index] = 1 #odd
+                elif matrix[i][reversed_index-1] != matrix[i][reversed_index-2]:
+                    stored = -1
+                    left[i][reversed_index] = 0 #mixed
+
+            if j>=3:
+                if matrix[i][reversed_index-1] == stored and stored == 0:
+                    stored = 0
+                    left[i][reversed_index] = 1 #even
+                elif matrix[i][reversed_index-1] == stored and stored == 1:
+                    stored = 1
+                    left[i][reversed_index] = 1 #odd
+                elif matrix[i][reversed_index-1] != stored:
+                    stored = -1
+                    left[i][reversed_index] = 0 #mixed
+                   
+    up = [ [0]*columns for i in range(rows)]
+    # up
+    stored = None
+    for j in range(columns):
+        for i in range(rows): 
+            reversed_index = i
+            if i==2:
+                if matrix[reversed_index-1][j] == matrix[reversed_index-2][j] and matrix[reversed_index-1][j] == 0:
+                    stored = 0
+                    up[reversed_index][j] = 1 #even
+                if matrix[reversed_index-1][j] == matrix[reversed_index-2][j] and matrix[reversed_index-1][j] == 1:
+                    stored = 1
+                    up[reversed_index][j] = 1 #odd
+                elif matrix[reversed_index-1][j] != matrix[reversed_index-2][j]:
+                    stored = -1
+                    up[reversed_index][j] = 0 #mixed 
+
+            if i>=3:
+                if matrix[reversed_index-1][j] == stored and stored == 0:
+                    stored = 0
+                    up[reversed_index][j] = 1 #even
+                elif matrix[reversed_index-1][j] == stored and stored == 1:
+                    stored = 1
+                    up[reversed_index][j] = 1 #odd
+                elif matrix[reversed_index-1][j] != stored:
+                    stored = -1
+                    up[reversed_index][j] = 0 #mixed
+ 
+    down = [ [0]*columns for i in range(rows)]
+    # down
+    stored = None
+    for j in range(columns):
+        for i in range(rows): 
+            reversed_index = rows-1-i
+            if i==2:
+                if matrix[reversed_index+1][j] == matrix[reversed_index+2][j] and matrix[reversed_index+1][j] == 0:
+                    stored = 0
+                    down[reversed_index][j] = 1 #even
+                if matrix[reversed_index+1][j] == matrix[reversed_index+2][j] and matrix[reversed_index+1][j] == 1:
+                    stored = 1
+                    down[reversed_index][j] = 1 #odd
+                elif matrix[reversed_index+1][j] != matrix[reversed_index+2][j]:
+                    stored = -1
+                    down[reversed_index][j] = 0 #mixed
+
+            if i>=3:
+                if matrix[reversed_index+1][j] == stored and stored == 0:
+                    stored = 0
+                    down[reversed_index][j] = 1 #even
+                elif matrix[reversed_index+1][j] == stored and stored == 1:
+                    stored = 1
+                    down[reversed_index][j] = 1 #odd
+                elif matrix[reversed_index+1][j] != stored:
+                    stored = -1
+                    down[reversed_index][j] = 0 #mixed
+    left_np = np.array(left)
+    right_np = np.array(right)
+    up_np = np.array(up)
+    down_np = np.array(down)
+
+    result = left_np+right_np+up_np+down_np
+
     for i in range(rows):
         for j in range(columns):
-            if (i>=number_of_cells):
-                array_up = matrix_np[:i,j]
-                if (sum(array_up) == len(array_up)) or (sum(array_up) ==0):
-                    
-                    output += 'X'
-
-                    if (j==(columns-1)):
-                        output+='\n'
-                    else:
-                        output+=' '
-                    continue
-
-            if (i<rows-number_of_cells):
-                array_down = matrix_np[i+1:,j]
-                if (sum(array_down) == len(array_down)) or (sum(array_down) ==0):
-                    output += 'X'
-                    if (j==(columns-1)):
-                        output+='\n'
-                    else:
-                        output+=' '
-                    continue
-
-
-            if (j>=number_of_cells):
-                array_left = matrix_np[i,:j]
-                if (sum(array_left) == len(array_left)) or (sum(array_left) ==0):
-                    output += 'X'
-                    if (j==(columns-1)):
-                        output+='\n'
-                    else:
-                        output+=' '
-                    continue
-
-
-            
-            if (j<columns-number_of_cells):
-                array_right = matrix_np[i,j+1:]
-                if (sum(array_right) == len(array_right)) or (sum(array_right) ==0):
-                    output += 'X'
-                    if (j==(columns-1)):
-                        output+='\n'
-                    else:
-                        output+=' '
-                    continue
-
-            output += '.'
-            if (j==(columns-1)):
-                output+='\n'
+            if result[i,j] >0:
+                output+='X'
             else:
+                output+='.'
+            if j!=(columns-1):
                 output+=' '
-            continue
-    output = output[:-1]
-    print(output)
+        if (i!=(rows-1)):
+            output+='\n'
+
+    print(output)    
 
 if __name__ == "__main__":
     main()
