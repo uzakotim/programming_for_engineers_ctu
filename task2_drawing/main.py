@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 # Programming for Engineers - KYR 2021
+# Graphical Editor
 # CVUT
 # Timur Uzakov
 import numpy as np
 
-def clear(command, canvas):
+def clear(command, canvas,columns,rows):
     if len(command)!=5:
         print("Wrongly specified clear command, should be: C x1 y1 x2 y2")
         return 
@@ -13,12 +14,30 @@ def clear(command, canvas):
         y1 = int(command[2])
         x2 = int(command[3])
         y2 = int(command[4])
+ 
+    if x1<0:
+        x1=0
+    if x2<0:
+        x2=0
+    if y1<0:
+        y1=0
+    if y2<0:
+        y2=0
+    if x1>=rows:
+        x1=rows
+    if x2>=rows:
+        x2 = rows
+    if y1>=columns:
+        y1  = columns
+    if y2>=columns:
+        y2 = columns
+
+
     canvas_np = np.array(canvas)
     canvas_np[x1:x2+1,y1:y2+1] = -1
-    print("Executing Clear")
     return list(canvas_np)
 
-def rectangle(command, canvas):
+def rectangle(command, canvas,columns,rows):
     if len(command)!=6:
         print("Wrongly specified clear command, should be: R x1 y1 x2 y2 char")
         return 
@@ -29,15 +48,31 @@ def rectangle(command, canvas):
         y2 = int(command[4])
         character = ord(command[5])
 
+    if x1<0:
+        x1=0
+    if x2<0:
+        x2=0
+    if y1<0:
+        y1=0
+    if y2<0:
+        y2=0
+    if x1>=rows:
+        x1=rows
+    if x2>=rows:
+        x2 = rows
+    if y1>=columns:
+        y1  = columns
+    if y2>=columns:
+        y2 = columns
+
     canvas_np = np.array(canvas)
     canvas_np[x1:x2+1,y1:y2+1] = character
-    print("Executing Rectangle")
     return list(canvas_np)
 
 
-def substitute(command, canvas):
+def substitute(command, canvas,columns,rows):
     if len(command)!=7:
-        print("Wrongly specified clear command, should be: S x1 y1 x2 y2 char char")
+        print("Wrongly specified substitute command, should be: S x1 y1 x2 y2 char char")
         return 
     else:
         x1 = int(command[1])
@@ -47,10 +82,26 @@ def substitute(command, canvas):
         character_old = ord(command[5])
         character_new = ord(command[6])
     
+    if x1<0:
+        x1=0
+    if x2<0:
+        x2=0
+    if y1<0:
+        y1=0
+    if y2<0:
+        y2=0
+    if x1>=rows:
+        x1=rows
+    if x2>=rows:
+        x2 = rows
+    if y1>=columns:
+        y1  = columns
+    if y2>=columns:
+        y2 = columns
+
     canvas_np = np.array(canvas)
     canvas_np[x1:x2+1,y1:y2+1][canvas_np[x1:x2+1,y1:y2+1] == character_old] = character_new
 
-    print("Executing Substitute")
     return list(canvas_np)
 
 def pyramid(command, canvas,columns,rows):
@@ -62,14 +113,30 @@ def pyramid(command, canvas,columns,rows):
         x1 = int(command[2])
         x2 = int(command[3])
         character = ord(command[4])
-    
+
+
     canvas_np = np.array(canvas)
     i = 0
+    start= 0
+    end =0
+    level =0
     while (x1+i<=x2+1-i):
-        if (y1-i)<rows and (y1-i>0):
-            canvas_np[y1-i,x1+i:x2+1-i] = character
+        start = x1+i
+        end = x2-i+1
+        level = y1-i
+        
+        if (start<0):
+            start = 0
+        if (end>columns):
+            end = columns
+        if (level<0):
+            level = 0
+        if (level>=rows):
+            i+=1
+            continue
+        canvas_np[level,start:end] = character
+        
         i+=1
-    print("Executing Pyramid")
     return list(canvas_np)
 
 def main():
@@ -82,11 +149,11 @@ def main():
 
     for i in range(num_commands):
         if (commands[i][0] == 'C'):
-            canvas = clear(commands[i],canvas)
+            canvas = clear(commands[i],canvas,columns,rows)
         if (commands[i][0] == 'R'):
-            canvas = rectangle(commands[i],canvas)
+            canvas = rectangle(commands[i],canvas,columns,rows)
         if (commands[i][0] == 'S'):
-            canvas = substitute(commands[i],canvas)
+            canvas = substitute(commands[i],canvas,columns,rows)
         if (commands[i][0] == 'P'):
             canvas = pyramid(commands[i],canvas,columns,rows)
     
