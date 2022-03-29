@@ -1,3 +1,3 @@
 # Created on iPad (Timur).
-
-print ('Hello World!')
+name = input("What is your name?")
+print (f'Hello, {name}!')
