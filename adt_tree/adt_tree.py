@@ -8,9 +8,11 @@ import queue
 
 class Node:
     def __init__(self, key):
+        # mandatory
         self.left = None
         self.right = None
         self.key = key
+        # extra
         self.xcoord = -1
         self.tag = ' ' # one character
 
@@ -23,15 +25,31 @@ class Node:
 #                         B I N A R Y   T R E E
 # ............................................................................
 
+# Tree manipulation not implemented directrly in Python
+# Neither in C,C++,C#,PHP,Java
+# Reason: many different types of trees 
+
+
 class BinaryTree:
     def __init__(self, key ):
         self.root = Node( key )
 
     def rndTree(self, node, depth):
-        node.key = 10+random.randrange(90)
+        # RANDOM TREE GENERATION
+        # Recursive scheme
+        # 1) Create root
+        # 2) Create smaller random tree and 
+        # set its root to be the left child of the of 
+        # the children root
+        # 3) Repeat at right 
+        # 4) Stop recursion
+
+
+        node.key = 10 +random.randrange(90)
         if depth <= 0:  return node
 
-        if random.randrange(0, 10) < 6:
+        if random.randrange(0, 10) < 6: #regulation of tree creation
+            # new constructor - new node
             childNode = Node ( 0 )  # any key will do
             node.left = self.rndTree( childNode, depth-1 )
 
@@ -251,7 +269,7 @@ random.seed( 1038 )
 t = BinaryTree( 0 )
 
 print( "Random tree" )
-t.rndTree( t.root, 4 )
+t.rndTree( t.root, 3 )
 
 print( "Display ")
 t.display()
