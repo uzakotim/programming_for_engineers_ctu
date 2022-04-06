@@ -118,7 +118,7 @@ class TestStringMethods(unittest.TestCase):
     def test_overall_cost(self):
         self.assertEqual(t.sumCosts(t.root), 494)
     def test_sum_keys(self):
-        self.assertEqual(t.sumKeys(t.root.left.left),18)
+        self.assertEqual(t.sumKeys(t.root.left.left),30)
     def test_disbalances_cost(self):
         self.assertEqual(t.sumDisbalance(t.root), 214)
 
