@@ -1,3 +1,4 @@
+import dis
 import unittest
 
 input_list = [
@@ -57,8 +58,38 @@ class Tree:
             node.left = self.rndTree(childNodeLeft,depth-1) 
             node.right = self.rndTree(childNodeRight,depth-1)
             return node
-    
 
+    def sumCosts(self,node):
+        if node == None: return 0
+        result = node.key*(node.depth+1) + self.sumCosts(node.left) + self.sumCosts(node.right)
+        return result
+    
+    def sumKeys(self,node):
+        if node == None: return 0
+        result = node.key + self.sumKeys(node.left) + self.sumKeys(node.right)
+        return result
+
+    def disbalance(self,node):  
+        # if empty
+        if node == None: return 0
+        # if no children
+        if node.left == None and node.right == None:
+            return 0
+        # if not empty and there are children
+        total = abs(self.sumKeys(node.left) - self.sumKeys(node.right))
+        return total
+
+    def sumDisbalance(self,node):
+        if node == None:
+            return 0
+        result = self.disbalance(node) + self.sumDisbalance(node.left) + self.sumDisbalance(node.right)
+        return result
+
+    # def sumDisbalances(self,node,depth):
+        # if depth <= 0:
+            # return 0 
+        # total = abs(self.Disbalances(node.left) + self.sumKeysDepth(node.right, depth-1))
+        # return total
 
 class TestStringMethods(unittest.TestCase):
 
@@ -84,7 +115,12 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(t.root.left.left.key, 12)
     def test_grand_children_SR(self):
         self.assertEqual(t.root.right.right.right.SR,4)
-
+    def test_overall_cost(self):
+        self.assertEqual(t.sumCosts(t.root), 494)
+    def test_sum_keys(self):
+        self.assertEqual(t.sumKeys(t.root.left.left),18)
+    def test_disbalances_cost(self):
+        self.assertEqual(t.sumDisbalance(t.root), 214)
 
 if __name__ == '__main__':
     result = input().split(' ')
@@ -92,4 +128,5 @@ if __name__ == '__main__':
         input_dict[input_list[i]] = int(val)
     t = Tree(input_dict['RK'],0,input_dict['RSR'])
     t.rndTree(t.root, 4)
+
     unittest.main()
