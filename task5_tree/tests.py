@@ -1,4 +1,3 @@
-import dis
 import unittest
 
 input_list = [
@@ -58,7 +57,7 @@ class Tree:
             node.left = self.rndTree(childNodeLeft,depth-1) 
             node.right = self.rndTree(childNodeRight,depth-1)
             return node
-
+    # TASK 1
     def sumCosts(self,node):
         if node == None: return 0
         result = node.key*(node.depth+1) + self.sumCosts(node.left) + self.sumCosts(node.right)
@@ -69,6 +68,7 @@ class Tree:
         result = node.key + self.sumKeys(node.left) + self.sumKeys(node.right)
         return result
 
+    # TASK 2
     def disbalance(self,node):  
         # if empty
         if node == None: return 0
@@ -85,11 +85,45 @@ class Tree:
         result = self.disbalance(node) + self.sumDisbalance(node.left) + self.sumDisbalance(node.right)
         return result
 
-    # def sumDisbalances(self,node,depth):
-        # if depth <= 0:
-            # return 0 
-        # total = abs(self.Disbalances(node.left) + self.sumKeysDepth(node.right, depth-1))
-        # return total
+
+    # TASK 3
+    def isTwoNode(self,node):
+        if node.left != None and node.right != None:
+            return True
+        else: 
+            return False
+
+    def countTwoNodes(self,node):
+        if node == None: return 0
+        if self.isTwoNode(node):
+            result = 1
+        else:
+            result = 0
+        return result + self.countTwoNodes(node.left) + self.countTwoNodes(node.right)
+
+    def isTwoBalanced(self,node):
+        if node.left == None and node.right == None:
+            return True
+        if node.left != None and node.right == None:
+            return False
+
+        if node.left == None and node.right != None:
+            return False
+
+        if (self.countTwoNodes(node.left) == self.countTwoNodes(node.right)):
+            return True
+        else: 
+            return False
+
+    def sumKeys2Balanced(self,node):
+        if node == None: return 0
+        if self.isTwoBalanced(node):
+            result = node.key
+        else:
+            result = 0
+        return result + self.sumKeys2Balanced(node.left) + self.sumKeys2Balanced(node.right)
+
+        
 
 class TestStringMethods(unittest.TestCase):
 
@@ -121,6 +155,29 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(t.sumKeys(t.root.left.left),30)
     def test_disbalances_cost(self):
         self.assertEqual(t.sumDisbalance(t.root), 214)
+    
+    def test_is_two_balanced(self):
+        self.assertEqual(t.isTwoNode(t.root), True)
+    def test_is_two_balanced_2(self):
+        self.assertEqual(t.isTwoNode(t.root.right.left), True)
+    def test_is_two_balanced_3(self):
+        self.assertEqual(t.isTwoNode(t.root.left.left), False)
+    def test_is_two_balanced(self):
+        self.assertEqual(t.isTwoBalanced(t.root.right.left),False)
+    def test_count_two_nodes(self):
+        self.assertEqual(t.countTwoNodes(t.root),4)
+    def test_count_two_nodes_sub(self):
+        self.assertEqual(t.countTwoNodes(t.root.right),3)
+    
+    def test_is_2balanced(self):
+        self.assertEqual(t.isTwoBalanced(t.root.right.left), False)
+    def test_left_left_right(self):
+        self.assertEqual(t.isTwoBalanced(t.root.left.left.right),False)
+    def test_sum_keys_2balanced(self):
+        self.assertEqual(t.sumKeys2Balanced(t.root), 66)
+    # def test_sum_keys_2balanced_root(self):
+        # self.assertEqual(t.sumKeys2Balanced(t.root.right), 66)
+    
 
 if __name__ == '__main__':
     result = input().split(' ')
