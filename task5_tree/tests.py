@@ -1,3 +1,6 @@
+from asyncio import FastChildWatcher
+from inspect import ismemberdescriptor
+from platform import node
 import unittest
 
 input_list = [
@@ -122,8 +125,50 @@ class Tree:
         else:
             result = 0
         return result + self.sumKeys2Balanced(node.left) + self.sumKeys2Balanced(node.right)
+    # Task 4
+    def isSibling(self,nodeOne,nodeTwo):
+        #suspicious 
+        if nodeOne == None or nodeTwo==None:
+            return False
+        #suspicious
 
+        if nodeOne.parent == nodeTwo.parent:
+            return True
+        else: 
+            return False         
+
+    def isParitySibling(self,nodeOne,nodeTwo):
+        if self.isSibling(nodeOne,nodeTwo):
+            if (nodeOne.key%2) == (nodeTwo.key%2):
+                return True
+        else:
+            return False
+    def countSiblings(self,node):
+        if node == None: return 0
         
+        if self.isParitySibling(node.left,node.right):
+            result = 1
+        else:
+            result = 0
+
+        return result+ self.countSiblings(node.left) + self.countSiblings(node.right)
+
+    def isMinimal(self,node, key):
+        if node ==None :
+            return True
+        if node.key >= key:
+            result = True
+        if node.key < key:
+            result = False
+        return result and (self.isMinimal(node.left,key) and self.isMinimal(node.right,key))
+
+    def sumKeysMinimal(self,node):
+        if node == None: return 0
+        if self.isMinimal(node,node.key):
+            result = node.key
+        else:
+            result = 0
+        return result + self.sumKeysMinimal(node.left) + self.sumKeysMinimal(node.right)
 
 class TestStringMethods(unittest.TestCase):
 
@@ -175,9 +220,21 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(t.isTwoBalanced(t.root.left.left.right),False)
     def test_sum_keys_2balanced(self):
         self.assertEqual(t.sumKeys2Balanced(t.root), 66)
-    # def test_sum_keys_2balanced_root(self):
-        # self.assertEqual(t.sumKeys2Balanced(t.root.right), 66)
+    def test_countSiblings(self):
+        self.assertEqual(t.countSiblings(t.root),2)    
     
+    def test_is_local_minimum_leaf(self):
+        self.assertEqual(t.isMinimal(t.root.left.left.right.left,t.root.left.left.right.left.key), True)
+    def test_is_local_minimum_node(self):
+        self.assertEqual(t.isMinimal(t.root.right,t.root.right.key), True)
+    def test_is_local_minimum_node2(self):
+        self.assertEqual(t.isMinimal(t.root.right.left,t.root.right.left.key), True)
+    def test_is_local_minimum_node3(self):
+        self.assertEqual(t.isMinimal(t.root.left.left,t.root.left.left.key), False)
+    
+    def test_sum_of_minmial(self):
+        self.assertEqual(t.sumKeysMinimal(t.root),87)
+
 
 if __name__ == '__main__':
     result = input().split(' ')
