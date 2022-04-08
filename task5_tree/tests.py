@@ -1,5 +1,7 @@
 from asyncio import FastChildWatcher
+from curses import noecho
 from inspect import ismemberdescriptor
+from operator import truediv
 from platform import node
 import unittest
 
@@ -152,7 +154,7 @@ class Tree:
             result = 0
 
         return result+ self.countSiblings(node.left) + self.countSiblings(node.right)
-
+    # TASK 5
     def isMinimal(self,node, key):
         if node ==None :
             return True
@@ -169,6 +171,36 @@ class Tree:
         else:
             result = 0
         return result + self.sumKeysMinimal(node.left) + self.sumKeysMinimal(node.right)
+    # TASK 6
+    def isLeaf(self,node):
+        return (node.left==None and node.right==None)
+
+    def isWeakly(self,node,key):
+        result = True
+        if node ==None : return True
+        if node.left == None and node.right == None:
+            if node.key <= key:
+                result = True 
+            else:
+                result = False
+        if node.left == None and node.right!=None:
+            return result and self.isWeakly(node.right,key)
+        if node.right == None and node.left!=None:
+            return result and self.isWeakly(node.left,key)
+
+        return result and (self.isWeakly(node.left,key) and self.isWeakly(node.right,key))
+
+    def countWeakly(self,node):
+        if node == None: return 0
+        if self.isWeakly(node,node.key) and not self.isLeaf(node):
+            result = 1
+        else:
+            result = 0
+        return result + self.countWeakly(node.left) + self.countWeakly(node.right)
+
+    # TASK 7
+
+    # TASK 8
 
 class TestStringMethods(unittest.TestCase):
 
@@ -234,6 +266,18 @@ class TestStringMethods(unittest.TestCase):
     
     def test_sum_of_minmial(self):
         self.assertEqual(t.sumKeysMinimal(t.root),87)
+    def test_is_weakly(self):
+        self.assertEqual(t.isWeakly(t.root.right.right.right,t.root.right.right.right.key),True)
+    def test_is_weakly2(self):
+        self.assertEqual(t.isWeakly(t.root.left.left,t.root.left.left.key),False)
+    def test_is_weakly3(self):
+        self.assertEqual(t.isWeakly(t.root.left,t.root.left.key),False)
+    def test_is_weakly4(self):
+        self.assertEqual(t.isWeakly(t.root.right,t.root.right.key),False)
+
+
+    def test_number_of_weakly_dominant(self):
+        self.assertEqual(t.countWeakly(t.root),3)
 
 
 if __name__ == '__main__':
