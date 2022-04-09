@@ -1,4 +1,5 @@
 from asyncio import FastChildWatcher
+from collections import deque
 from curses import noecho
 from inspect import ismemberdescriptor
 from operator import rshift, truediv
@@ -6,7 +7,9 @@ from platform import node
 from re import S
 import unittest
 
-from defer import return_value
+from cv2 import detail_SphericalProjector
+from matplotlib import patheffects
+
 
 input_list = [
     'AL',
@@ -42,6 +45,7 @@ class Node:
 class Tree:
     def __init__(self,key,depth,SR):
         self.root = Node(key,depth,SR,None)
+        self.pathes = []
     
     def rndTree(self, node, depth):
         if depth<=0: return node
@@ -243,6 +247,25 @@ class Tree:
         return result + self.countL1(node.left) + self.countL1(node.right)
     
     # TASK 8
+    def findPathes(self,node,path):
+        if node == None:
+            return 
+        
+        path.append(node.key)
+        
+        # if (node.key>=node.parent.key):
+        self.pathes.append(list(path))
+
+        self.findPathes(node.left,path)
+        self.findPathes(node.right,path)
+        path.pop()
+    
+    def findAllPathes(self,node):
+        if node == None: return
+        path = []
+        t.findPathes(node,path)
+        t.findAllPathes(node.left)
+        t.findAllPathes(node.right)
 
 class TestStringMethods(unittest.TestCase):
 
@@ -330,6 +353,17 @@ class TestStringMethods(unittest.TestCase):
     def test_countL1(self):
         self.assertEqual(t.countL1(t.root),4)
 
+    # def test_increasing_path1(self):
+        # self.assertEqual(t.countIncresingKeys(t.root.left.left.right),18)
+    # def test_increasing_path2(self):
+        # self.assertEqual(t.countIncresingKeys(t.root.right.left),34)
+    # def test_increasing_path3(self):
+        # self.assertEqual(t.countIncresingKeys(t.root.left.left),12)
+    # def test_increasing_path4(self):
+        # self.assertEqual(t.countIncresingKeys(t.root.left),18)
+
+
+
 if __name__ == '__main__':
     result = input().split(' ')
     for i,val in enumerate(result):
@@ -337,4 +371,13 @@ if __name__ == '__main__':
     t = Tree(input_dict['RK'],0,input_dict['RSR'])
     t.rndTree(t.root, 4)
 
+    t.findAllPathes(t.root)
+    sums = []
+    for path in t.pathes:
+        if len(path)>=2 and (path ==sorted(path)):
+            sums.append(sum(path))
+
+    print("Maximal value")
+    print(max(sums))
+            
     unittest.main()
