@@ -1,9 +1,12 @@
 from asyncio import FastChildWatcher
 from curses import noecho
 from inspect import ismemberdescriptor
-from operator import truediv
+from operator import rshift, truediv
 from platform import node
+from re import S
 import unittest
+
+from defer import return_value
 
 input_list = [
     'AL',
@@ -199,7 +202,46 @@ class Tree:
         return result + self.countWeakly(node.left) + self.countWeakly(node.right)
 
     # TASK 7
+    def hasOnlyLeft(self,node):
+        if node.left != None and node.right == None:
+            return True
+        else:
+            return False
+    def hasOnlyRight(self,node):
+        if node.right != None and node.left == None:
+            return True
+        else:
+            return False
 
+    def countOnlyLeft(self,node):
+        if node == None: return 0
+        if self.hasOnlyLeft(node):
+            result = 1
+        else:
+            result = 0
+        return result + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
+    
+    def countOnlyRight(self,node):
+        if node == None: return 0
+        if self.hasOnlyRight(node):
+            result = 1
+        else:
+            result = 0
+        return result + self.countOnlyRight(node.left) + self.countOnlyRight(node.right)
+    
+    def isL1(self,node):
+        if (self.countOnlyLeft(node)>0) and (self.countOnlyRight(node)==0):
+            return True
+        else:
+            return False
+    def countL1(self,node):
+        if node == None: return 0
+        if self.isL1(node):
+            result = 1
+        else:
+            result = 0
+        return result + self.countL1(node.left) + self.countL1(node.right)
+    
     # TASK 8
 
 class TestStringMethods(unittest.TestCase):
@@ -279,6 +321,14 @@ class TestStringMethods(unittest.TestCase):
     def test_number_of_weakly_dominant(self):
         self.assertEqual(t.countWeakly(t.root),3)
 
+
+    def test_is_l1_tree(self):
+        self.assertEqual(t.isL1(t.root),False)
+    def test_is_l1_tree2(self):
+        self.assertEqual(t.isL1(t.root.right.left),True)
+
+    def test_countL1(self):
+        self.assertEqual(t.countL1(t.root),4)
 
 if __name__ == '__main__':
     result = input().split(' ')
