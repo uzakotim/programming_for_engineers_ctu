@@ -1,4 +1,7 @@
 
+from numpy import true_divide
+
+
 input_list = [
     'AL',
     'AR',
@@ -34,6 +37,7 @@ class Tree:
     def __init__(self,key,depth,SR):
         self.root = Node(key,depth,SR,None)
         self.pathes = []
+        self.sums = []
     
     def rndTree(self, node, depth):
         if depth<=0: return node
@@ -42,48 +46,48 @@ class Tree:
             node.right = None
             return node
 
-        childNodeLeft   = Node ((input_dict['AL']*(node.key+1))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AL'])%input_dict['M'],node)
-        childNodeRight  = Node ((input_dict['AR']*(node.key+2))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AR'])%input_dict['M'],node)
-
         if input_dict['C0'] <= node.SR and node.SR<input_dict['CL']:
+            childNodeLeft   = Node ((input_dict['AL']*(node.key+1))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AL'])%input_dict['M'],node)
             node.left = self.rndTree(childNodeLeft, depth-1)
             node.right = None
             return node
         if input_dict['CL'] <= node.SR and node.SR < input_dict['CR']:
             node.left = None
+            childNodeRight  = Node ((input_dict['AR']*(node.key+2))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AR'])%input_dict['M'],node)
             node.right = self.rndTree(childNodeRight, depth-1)
             return node
         if input_dict['CR'] <= node.SR and node.SR < input_dict['M']:
+            childNodeLeft   = Node ((input_dict['AL']*(node.key+1))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AL'])%input_dict['M'],node)
+            childNodeRight  = Node ((input_dict['AR']*(node.key+2))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AR'])%input_dict['M'],node)
             node.left = self.rndTree(childNodeLeft,depth-1) 
             node.right = self.rndTree(childNodeRight,depth-1)
             return node
     # TASK 1
     def sumCosts(self,node):
         if node == None: return 0
-        result = node.key*(node.depth+1) + self.sumCosts(node.left) + self.sumCosts(node.right)
-        return result
+        return node.key*(node.depth+1) + self.sumCosts(node.left) + self.sumCosts(node.right)
     
     def sumKeys(self,node):
         if node == None: return 0
-        result = node.key + self.sumKeys(node.left) + self.sumKeys(node.right)
-        return result
+        return node.key + self.sumKeys(node.left) + self.sumKeys(node.right)
 
     # TASK 2
     def disbalance(self,node):  
         # if empty
-        if node == None: return 0
-        # if no children
-        if node.left == None and node.right == None:
-            return 0
+        if node == None or (node.left == None and node.right==None): return 0
         # if not empty and there are children
-        total = abs(self.sumKeys(node.left) - self.sumKeys(node.right))
-        return total
+        one = self.sumKeys(node.left)
+        two = self.sumKeys(node.right)
+        if one> two:
+            return one - two
+        else:
+            return two - one
 
     def sumDisbalance(self,node):
         if node == None:
             return 0
-        result = self.disbalance(node) + self.sumDisbalance(node.left) + self.sumDisbalance(node.right)
-        return result
+        return self.disbalance(node) + self.sumDisbalance(node.left) + self.sumDisbalance(node.right)
+        
 
 
     # TASK 3
@@ -207,42 +211,34 @@ class Tree:
 
     def countOnlyLeft(self,node):
         if node == None: return 0
-        if self.hasOnlyLeft(node):
-            result = 1
-        else:
-            result = 0
-        return result + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
-    
-    def countOnlyRight(self,node):
-        if node == None: return 0
-        if self.hasOnlyRight(node):
-            result = 1
-        else:
-            result = 0
-        return result + self.countOnlyRight(node.left) + self.countOnlyRight(node.right)
+        if not self.hasOnlyRight(node):
+            if self.hasOnlyLeft(node):
+                return 1 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
+            else:
+                return 0 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
+        elif self.hasOnlyRight(node):
+            return -10000000
     
     def isL1(self,node):
-        if (self.countOnlyLeft(node)>0) and (self.countOnlyRight(node)==0):
+        if (self.countOnlyLeft(node)>0):
             return True
         else:
             return False
+
     def countL1(self,node):
         if node == None: return 0
         if self.isL1(node):
-            result = 1
+            return 1 + self.countL1(node.left) + self.countL1(node.right)
         else:
-            result = 0
-        return result + self.countL1(node.left) + self.countL1(node.right)
+            return 0 + self.countL1(node.left) + self.countL1(node.right)
     
-    # TASK 8
+    # TASK 8    
     def findPathes(self,node,path):
         if node == None:
             return 
-        
         path.append(node.key)
-        
-        # if (node.key>=node.parent.key):
-        self.pathes.append(list(path))
+        if len(path)>=2 and self.isSortedPath(path):
+            self.sums.append(sum(path))
 
         self.findPathes(node.left,path)
         self.findPathes(node.right,path)
@@ -250,11 +246,20 @@ class Tree:
     
     def findAllPathes(self,node):
         if node == None: return
-        path = []
+        path =[]
         self.findPathes(node,path)
         self.findAllPathes(node.left)
         self.findAllPathes(node.right)
-
+    
+    def isSortedPath(self,path):
+        flag = True
+        for i in range(len(path)-1):
+            if path[i+1]>=path[i]:
+                flag = True
+            else:
+                flag = False
+                break
+        return flag
 
 if __name__ == '__main__':
     result = input().split(' ')
@@ -262,14 +267,9 @@ if __name__ == '__main__':
         input_dict[input_list[i]] = int(val)
 
     t = Tree(input_dict['RK'],0,input_dict['RSR'])
+    
     t.rndTree(t.root, input_dict['D'])
-
-    t.findAllPathes(t.root)
-    sums = []
-    for path in t.pathes:
-        if len(path)>=2 and (path ==sorted(path)):
-            sums.append(sum(path))
-
+    # t.findAllPathes(t.root)
     print(t.sumCosts(t.root))
     print(t.sumDisbalance(t.root))
     print(t.sumKeys2Balanced(t.root))
@@ -277,4 +277,5 @@ if __name__ == '__main__':
     print(t.sumKeysMinimal(t.root))
     print(t.countWeakly(t.root))
     print(t.countL1(t.root))
-    print(max(sums))
+    t.findAllPathes(t.root)
+    print(max(t.sums))
