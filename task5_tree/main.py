@@ -31,6 +31,7 @@ class Node:
         self.SR = SR
         self.SK = None
         self.CTN= None
+        self.COL = 0
 
 #-----------------------------
 #         BINARY TREE
@@ -146,7 +147,7 @@ class Tree:
             result = 0
 
         return result+ self.countSiblings(node.left) + self.countSiblings(node.right)
-        
+
     # TASK 5
     def isMinimal(self,node, key):
         if node ==None :
@@ -164,6 +165,7 @@ class Tree:
         else:
             result = 0
         return result + self.sumKeysMinimal(node.left) + self.sumKeysMinimal(node.right)
+        
     # TASK 6
     def isLeaf(self,node):
         return (node.left==None and node.right==None)
@@ -195,17 +197,19 @@ class Tree:
 
     def countOnlyLeft(self,node):
         if node == None: return 0
-        if not (node.right != None and node.left == None):
-            if (node.left != None and node.right == None):
-                return 1 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
-            else:
-                return 0 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
-        else:
-            return -10000000
+        if (node.left != None and node.right == None):
+            node.COL = 1 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
+        elif (node.left == None and node.right == None):
+            node.COL = 0 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
+        elif (node.left == None and node.right != None):
+            node.COL = -1000000000000 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
+        elif (node.left != None and node.right != None):
+            node.COL = 0 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
+        return node.COL
     
     def countL1(self,node):
         if node == None: return 0
-        if (self.countOnlyLeft(node)>0):
+        if (node.COL>0):
             return 1 + self.countL1(node.left) + self.countL1(node.right)
         else:
             return 0 + self.countL1(node.left) + self.countL1(node.right)
@@ -251,15 +255,18 @@ if __name__ == '__main__':
     t = Tree(input_list[7],0,input_list[8])    
     t.rndTree(t.root, input_list[5])
 
-    #print(t.sumCosts(t.root))
-    #t.sumKeys(t.root)
-    #print(t.disbalance(t.root))
-    #t.countTwoNodes(t.root)
-    #print(t.sumKeys2Balanced(t.root))
-    
+    print(t.sumCosts(t.root))
+    t.sumKeys(t.root)
+    print(t.disbalance(t.root))
+    t.countTwoNodes(t.root)
+    print(t.sumKeys2Balanced(t.root))
     print(t.countSiblings(t.root))
-    # print(t.sumKeysMinimal(t.root))
-    # print(t.countWeakly(t.root))
-    # print(t.countL1(t.root))
-    # t.findAllPathes(t.root)
+    print(t.sumKeysMinimal(t.root))
+    print(t.countWeakly(t.root))
+    t.countOnlyLeft(t.root)
+    print(t.countL1(t.root))
+
+
+#    t.findAllPathes(t.root)
+
     print("--- %s seconds ---" % (time.time() - start_time))
