@@ -1,20 +1,20 @@
+from logging import root
+import time
 
-from numpy import true_divide
 
+# input_list = [
+#     'AL',
+#     'AR',
+#     'C0',
+#     'CL',
+#     'CR',
+#     'D',
+#     'M',
+#     'RK',
+#     'RSR']
 
-input_list = [
-    'AL',
-    'AR',
-    'C0',
-    'CL',
-    'CR',
-    'D',
-    'M',
-    'RK',
-    'RSR']
+input_list = [0]*9
 
-input_dict = {
-}   
 
 #-----------------------------
 #           NODE
@@ -29,6 +29,7 @@ class Node:
 
         self.key = key
         self.SR = SR
+        self.SK = None
 
 #-----------------------------
 #         BINARY TREE
@@ -37,28 +38,28 @@ class Tree:
     def __init__(self,key,depth,SR):
         self.root = Node(key,depth,SR,None)
         self.pathes = []
-        self.sums = []
+        self.maximal = 0
     
     def rndTree(self, node, depth):
         if depth<=0: return node
-        if node.SR < input_dict['C0'] or node.depth == input_dict['D']:
+        if node.SR < input_list[2] or node.depth == input_list[5]:
             node.left = None
             node.right = None
             return node
 
-        if input_dict['C0'] <= node.SR and node.SR<input_dict['CL']:
-            childNodeLeft   = Node ((input_dict['AL']*(node.key+1))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AL'])%input_dict['M'],node)
+        if input_list[2] <= node.SR and node.SR<input_list[3]:
+            childNodeLeft   = Node ((input_list[0]*(node.key+1))%input_list[6],(node.depth + 1),(node.SR*input_list[0])%input_list[6],node)
             node.left = self.rndTree(childNodeLeft, depth-1)
             node.right = None
             return node
-        if input_dict['CL'] <= node.SR and node.SR < input_dict['CR']:
+        if input_list[3] <= node.SR and node.SR < input_list[4]:
             node.left = None
-            childNodeRight  = Node ((input_dict['AR']*(node.key+2))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AR'])%input_dict['M'],node)
+            childNodeRight  = Node ((input_list[1]*(node.key+2))%input_list[6],(node.depth + 1),(node.SR*input_list[1])%input_list[6],node)
             node.right = self.rndTree(childNodeRight, depth-1)
             return node
-        if input_dict['CR'] <= node.SR and node.SR < input_dict['M']:
-            childNodeLeft   = Node ((input_dict['AL']*(node.key+1))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AL'])%input_dict['M'],node)
-            childNodeRight  = Node ((input_dict['AR']*(node.key+2))%input_dict['M'],(node.depth + 1),(node.SR*input_dict['AR'])%input_dict['M'],node)
+        if input_list[4] <= node.SR and node.SR < input_list[6]:
+            childNodeLeft   = Node ((input_list[0]*(node.key+1))%input_list[6],(node.depth + 1),(node.SR*input_list[0])%input_list[6],node)
+            childNodeRight  = Node ((input_list[1]*(node.key+2))%input_list[6],(node.depth + 1),(node.SR*input_list[1])%input_list[6],node)
             node.left = self.rndTree(childNodeLeft,depth-1) 
             node.right = self.rndTree(childNodeRight,depth-1)
             return node
@@ -67,29 +68,27 @@ class Tree:
         if node == None: return 0
         return node.key*(node.depth+1) + self.sumCosts(node.left) + self.sumCosts(node.right)
     
+   
+    # TASK 2
     def sumKeys(self,node):
         if node == None: return 0
-        return node.key + self.sumKeys(node.left) + self.sumKeys(node.right)
+        node.SK = node.key + self.sumKeys(node.left) + self.sumKeys(node.right)
+        return node.SK
 
-    # TASK 2
     def disbalance(self,node):  
-        # if empty
         if node == None or (node.left == None and node.right==None): return 0
-        # if not empty and there are children
-        one = self.sumKeys(node.left)
-        two = self.sumKeys(node.right)
-        if one> two:
-            return one - two
+        if node.left == None:
+            one = 0
         else:
-            return two - one
-
-    def sumDisbalance(self,node):
-        if node == None:
-            return 0
-        return self.disbalance(node) + self.sumDisbalance(node.left) + self.sumDisbalance(node.right)
-        
-
-
+            one = node.left.SK
+        if node.right == None:
+            two = 0
+        else:
+            two = node.right.SK
+        if one> two:
+            return one - two + self.disbalance(node.left) + self.disbalance(node.right)
+        else:
+            return two - one + self.disbalance(node.left) + self.disbalance(node.right)
     # TASK 3
     def isTwoNode(self,node):
         if node.left != None and node.right != None:
@@ -198,47 +197,33 @@ class Tree:
         return result + self.countWeakly(node.left) + self.countWeakly(node.right)
 
     # TASK 7
-    def hasOnlyLeft(self,node):
-        if node.left != None and node.right == None:
-            return True
-        else:
-            return False
-    def hasOnlyRight(self,node):
-        if node.right != None and node.left == None:
-            return True
-        else:
-            return False
 
     def countOnlyLeft(self,node):
         if node == None: return 0
-        if not self.hasOnlyRight(node):
-            if self.hasOnlyLeft(node):
+        if not (node.right != None and node.left == None):
+            if (node.left != None and node.right == None):
                 return 1 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
             else:
                 return 0 + self.countOnlyLeft(node.left) + self.countOnlyLeft(node.right)
-        elif self.hasOnlyRight(node):
+        else:
             return -10000000
     
-    def isL1(self,node):
-        if (self.countOnlyLeft(node)>0):
-            return True
-        else:
-            return False
-
     def countL1(self,node):
         if node == None: return 0
-        if self.isL1(node):
+        if (self.countOnlyLeft(node)>0):
             return 1 + self.countL1(node.left) + self.countL1(node.right)
         else:
             return 0 + self.countL1(node.left) + self.countL1(node.right)
     
-    # TASK 8    
+    # TASK 8     
+
     def findPathes(self,node,path):
-        if node == None:
-            return 
+        if node == None: return 
         path.append(node.key)
         if len(path)>=2 and self.isSortedPath(path):
-            self.sums.append(sum(path))
+            cur_maximal = sum(path)
+            if cur_maximal>=self.maximal:
+                self.maximal = cur_maximal
 
         self.findPathes(node.left,path)
         self.findPathes(node.right,path)
@@ -261,21 +246,23 @@ class Tree:
                 break
         return flag
 
-if __name__ == '__main__':
-    result = input().split(' ')
-    for i,val in enumerate(result):
-        input_dict[input_list[i]] = int(val)
 
-    t = Tree(input_dict['RK'],0,input_dict['RSR'])
-    
-    t.rndTree(t.root, input_dict['D'])
+if __name__ == '__main__':
+   
+    result = input().split(' ')
+    start_time = time.time()
+    for i,val in enumerate(result):
+        input_list[i] = int(val)
+    t = Tree(input_list[7],0,input_list[8])    
+    t.rndTree(t.root, input_list[5])
+
+    # print(t.sumCosts(t.root))
+    t.sumKeys(t.root)
+    print(t.disbalance(t.root))
+    # print(t.sumKeys2Balanced(t.root))
+    # print(t.countSiblings(t.root))
+    # print(t.sumKeysMinimal(t.root))
+    # print(t.countWeakly(t.root))
+    # print(t.countL1(t.root))
     # t.findAllPathes(t.root)
-    print(t.sumCosts(t.root))
-    print(t.sumDisbalance(t.root))
-    print(t.sumKeys2Balanced(t.root))
-    print(t.countSiblings(t.root))
-    print(t.sumKeysMinimal(t.root))
-    print(t.countWeakly(t.root))
-    print(t.countL1(t.root))
-    t.findAllPathes(t.root)
-    print(max(t.sums))
+    print("--- %s seconds ---" % (time.time() - start_time))
