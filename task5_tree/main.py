@@ -30,6 +30,7 @@ class Node:
         self.key = key
         self.SR = SR
         self.SK = None
+        self.CTN= None
 
 #-----------------------------
 #         BINARY TREE
@@ -90,19 +91,14 @@ class Tree:
         else:
             return two - one + self.disbalance(node.left) + self.disbalance(node.right)
     # TASK 3
-    def isTwoNode(self,node):
-        if node.left != None and node.right != None:
-            return True
-        else: 
-            return False
 
     def countTwoNodes(self,node):
         if node == None: return 0
-        if self.isTwoNode(node):
-            result = 1
+        if (node.left != None and node.right != None):
+            node.CTN = 1 + self.countTwoNodes(node.left) + self.countTwoNodes(node.right)
         else:
-            result = 0
-        return result + self.countTwoNodes(node.left) + self.countTwoNodes(node.right)
+            node.CTN = 0 + self.countTwoNodes(node.left) + self.countTwoNodes(node.right)
+        return node.CTN
 
     def isTwoBalanced(self,node):
         if node.left == None and node.right == None:
@@ -113,7 +109,7 @@ class Tree:
         if node.left == None and node.right != None:
             return False
 
-        if (self.countTwoNodes(node.left) == self.countTwoNodes(node.right)):
+        if (node.left.CTN == node.right.CTN):
             return True
         else: 
             return False
@@ -127,10 +123,8 @@ class Tree:
         return result + self.sumKeys2Balanced(node.left) + self.sumKeys2Balanced(node.right)
     # Task 4
     def isSibling(self,nodeOne,nodeTwo):
-        #suspicious 
         if nodeOne == None or nodeTwo==None:
             return False
-        #suspicious
 
         if nodeOne.parent == nodeTwo.parent:
             return True
@@ -152,6 +146,7 @@ class Tree:
             result = 0
 
         return result+ self.countSiblings(node.left) + self.countSiblings(node.right)
+        
     # TASK 5
     def isMinimal(self,node, key):
         if node ==None :
@@ -256,11 +251,13 @@ if __name__ == '__main__':
     t = Tree(input_list[7],0,input_list[8])    
     t.rndTree(t.root, input_list[5])
 
-    # print(t.sumCosts(t.root))
-    t.sumKeys(t.root)
-    print(t.disbalance(t.root))
-    # print(t.sumKeys2Balanced(t.root))
-    # print(t.countSiblings(t.root))
+    #print(t.sumCosts(t.root))
+    #t.sumKeys(t.root)
+    #print(t.disbalance(t.root))
+    #t.countTwoNodes(t.root)
+    #print(t.sumKeys2Balanced(t.root))
+    
+    print(t.countSiblings(t.root))
     # print(t.sumKeysMinimal(t.root))
     # print(t.countWeakly(t.root))
     # print(t.countL1(t.root))
