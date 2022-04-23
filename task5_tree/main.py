@@ -1,5 +1,5 @@
 import time
-from unittest import result
+
 
 class Node:
     def __init__(self,key,depth,SR,Parent):
@@ -117,7 +117,7 @@ class Tree:
     # TASK 5
     def isMinimal(self,node, key):
         if node == None:    return True
-        if node.key >= key: return True and (self.isMinimal(node.left,key) and self.isMinimal(node.right,key))
+        if node.key >= key: return True  and (self.isMinimal(node.left,key) and self.isMinimal(node.right,key))
         if node.key < key:  return False and (self.isMinimal(node.left,key) and self.isMinimal(node.right,key))
 
     def sumKeysMinimal(self,node):
@@ -203,37 +203,37 @@ if __name__ == '__main__':
     t.rndTree(t.root, input_list[5])
     
     output = ''
-    t.sumAllCosts += t.root.key
-    output += str(t.sumAllCosts)
-    output+= '\n'
+    # t.sumAllCosts += t.root.key
+    # output += str(t.sumAllCosts)
+    # output+= '\n'
     
-    t.sumKeys(t.root)
-    output+= str(t.disbalance(t.root))
-    output+= '\n'
+    # t.sumKeys(t.root)
+    # output+= str(t.disbalance(t.root))
+    # output+= '\n'
     
-    t.countTwoNodes(t.root)
-    output+= str(t.sumKeys2Balanced(t.root))
-    output+= '\n'
+    # t.countTwoNodes(t.root)
+    # output+= str(t.sumKeys2Balanced(t.root))
+    # output+= '\n'
     
-    t.countSiblings(t.root)
-    output+=str(t.counterSiblings)
-    output+= '\n'
+    # t.countSiblings(t.root)
+    # output+=str(t.counterSiblings)
+    # output+= '\n'
  
-    output += str(t.sumKeysMinimal(t.root))
-    output+= '\n'
+    # output += str(t.sumKeysMinimal(t.root))
+    # output+= '\n'
 
     t.findMaximalsForAllTrees(t.root)
     output+=str(t.counter)
     output+= '\n'
     
     
-    t.countOnlyLeft(t.root)
-    t.countL1(t.root)
-    output += str(t.counterL1)
-    output+= '\n'
+    # t.countOnlyLeft(t.root)
+    # t.countL1(t.root)
+    # output += str(t.counterL1)
+    # output+= '\n'
  
-    t.customFindPathes(t.root,[])
-    output+=str(t.maximal)
+    # t.customFindPathes(t.root,[])
+    # output+=str(t.maximal)
  
     print(output) 
     
