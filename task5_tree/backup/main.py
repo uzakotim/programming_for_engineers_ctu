@@ -178,7 +178,6 @@ class Tree:
 
 if __name__ == '__main__':
    
-    start_time = time.time()
     # input_list = [
     # 'AL',
     # 'AR',
@@ -190,125 +189,44 @@ if __name__ == '__main__':
     # 'RK',
     # 'RSR']
     input_list = [int(val)for val in input().split(' ')]
+    start_time = time.time()
+    t = Tree(input_list[7],0,input_list[8])    
+    t.rndTree(t.root, input_list[5])
     
-    key_list = []
-    sr_list  = []
-    depth_list=[]
-    left_child_list =  [] # list of indexes of all left children
-    right_child_list = [] # list of indexes of all right children
-
-
-    # Root node    
-    key_list.append(input_list[7])
-    sr_list.append(input_list[8])
-    depth_list.append(0)
-
-    left_child_list.append(None)
-    right_child_list.append(None)
-
-    current = 0 # current goes through every node
-    child_counter = 0
-
-    while depth_list[current]<input_list[5]:
-        if sr_list[current]< input_list[2] or depth_list[current] == input_list[5]:
-            left_child_list[current]  = None
-            right_child_list[current] = None
-
-        KeyL = (input_list[0]*(key_list[current]+1))%input_list[6]
-        KeyR = (input_list[1]*(key_list[current]+2))%input_list[6]
-        SRL  = (sr_list[current]*input_list[0])%input_list[6]
-        SRR  = (sr_list[current]*input_list[1])%input_list[6] 
-        
-        if input_list[2]<= sr_list[current] and sr_list[current]<input_list[3]:
-            child_counter+=1
-            key_list.append(KeyL)
-            depth_list.append(depth_list[current]+1)
-            sr_list.append(SRL)
-
-            left_child_list[current]  = child_counter
-            right_child_list[current] = None
-            
-            left_child_list.append(None)
-            right_child_list.append(None)
-            
-            current+=1
-            continue
-
-        if input_list[3]<= sr_list[current] and sr_list[current]<input_list[4]:
-            child_counter+=1
-            key_list.append(KeyR)
-            depth_list.append(depth_list[current]+1)
-            sr_list.append(SRR)
-
-            right_child_list[current] = child_counter
-            left_child_list[current]  = None
-
-            left_child_list.append(None)
-            right_child_list.append(None)
-
-            current+=1
-            continue
-
-        if input_list[4] <= sr_list[current] and sr_list[current]<input_list[6]:
-            child_counter+=1
-            key_list.append(KeyL)
-            depth_list.append(depth_list[current]+1)
-            sr_list.append(SRL)
-            
-            left_child_list[current]  = child_counter
-
-            left_child_list.append(None)
-            right_child_list.append(None)
-
-            child_counter+=1
-            key_list.append(KeyR)
-            depth_list.append(depth_list[current]+1)
-            sr_list.append(SRR)
-
-            right_child_list[current] = child_counter
-
-            left_child_list.append(None)
-            right_child_list.append(None)
-        current+=1
-
     output = ''
-
-
-    sumCosts = 0
-    for i,key in enumerate(key_list):
-        sumCosts+= key*(depth_list[i]+1)
     
-    output += str(sumCosts)
+    t.sumAllCosts += t.root.key
+    output += str(t.sumAllCosts)
     output+= '\n'
-
-    # t.sumKeys(t.root)
-    # output+= str(t.disbalance(t.root))
-    # output+= '\n'
     
-    # t.countTwoNodes(t.root)
-    # t.sumKeys2Balanced(t.root)
-    # output += str(t.sumTwoBalanced)
-    # output+= '\n'
+    t.sumKeys(t.root)
+    output+= str(t.disbalance(t.root))
+    output+= '\n'
     
-    # output+=str(t.counterSiblings)
-    # output+= '\n'
+    t.countTwoNodes(t.root)
+    t.sumKeys2Balanced(t.root)
+    output += str(t.sumTwoBalanced)
+    output+= '\n'
+    
+    output+=str(t.counterSiblings)
+    output+= '\n'
  
-    # t.sumKeysMinimal(t.root)
-    # output += str(t.sumMinimal)
-    # output += '\n'
+    t.sumKeysMinimal(t.root)
+    output += str(t.sumMinimal)
+    output += '\n'
 
-    # t.findMaximalsForAllTrees(t.root)
-    # output+=str(t.counter)
-    # output+= '\n'
+    t.findMaximalsForAllTrees(t.root)
+    output+=str(t.counter)
+    output+= '\n'
     
     
-    # t.countOnlyLeft(t.root)
-    # t.countL1(t.root)
-    # output += str(t.counterL1)
-    # output+= '\n'
+    t.countOnlyLeft(t.root)
+    t.countL1(t.root)
+    output += str(t.counterL1)
+    output+= '\n'
  
-    # t.customFindPathes(t.root,[])
-    # output+=str(t.maximal)
+    t.customFindPathes(t.root,[])
+    output+=str(t.maximal)
  
     print(output) 
     
