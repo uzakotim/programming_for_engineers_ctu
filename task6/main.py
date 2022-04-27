@@ -1,26 +1,38 @@
 #------------------------------------------------------------------------
-#   Binary Adjacency List. Solved by: Timur Uzakov. 2022                |                                            |
+#   Binary Adjacency List. Solved by: Timur Uzakov. 2022                |
 #------------------------------------------------------------------------
+
+from platform import node
+import re
 import time
 debug = False # set to True, in case you need to track execution time
 
 class Graph:
     def __init__(self, n,colors):
-        
         self.adjacency_black = colors
+        self.adjacency_white = [1 - x for x in colors]
         self.left  = n*[None]
         self.right = n*[None]
         self.number_of_node_in_tree = 0
         self.L = 0
         self.E = 0
         self.R = 0
-  
-    def count(self,head):
-        if head == None: return 0  
-        self.number_of_node_in_tree += 1
-        return self.adjacency_black[head]   \
-             + self.count(self.left[head])  \
-             + self.count(self.right[head]) 
+        self.b = n*[None]
+        self.w = n*[None]
+        self.nodes = n*[None]
+        self.counter = 0
+
+    def countBlack(self,head):
+        self.counter += 1
+        if head == None: return 0
+        self.b[head] = self.adjacency_black[head] + self.countBlack(self.left[head]) + self.countBlack(self.right[head]) 
+        return self.b[head]
+
+    def countWhite(self,head):
+        self.counter += 1
+        if head == None: return 0
+        self.w[head] = self.adjacency_white[head] + self.countWhite(self.left[head]) + self.countWhite(self.right[head]) 
+        return self.w[head]
 
 if __name__ == '__main__':
     if debug: start_time = time.time()
@@ -41,16 +53,17 @@ if __name__ == '__main__':
 
 #------------------------------------------------------------------------
 #   If statements that compare the white,black,wwhite and bblack values |
-#------------------------------------------------------------------------
+#------------------------------------------------------------------------   
+    graph.countWhite(0)
+    graph.countBlack(0)
+
     for i in range(n):
         var_left  = None
         var_right = None
 
         if graph.left[i]:
-            graph.number_of_node_in_tree = 0
-            b = graph.count(graph.left[i])
-            k = graph.number_of_node_in_tree
-            w = k - b
+            b = graph.b[graph.left[i]]
+            w = graph.w[graph.left[i]]
             if b != 0:
                 var_left = w/b
             else:
@@ -61,10 +74,8 @@ if __name__ == '__main__':
             var_left = None
 
         if graph.right[i]:
-            graph.number_of_node_in_tree = 0
-            bb = graph.count(graph.right[i])
-            kk = graph.number_of_node_in_tree
-            ww = kk - bb
+            bb = graph.b[graph.right[i]]
+            ww = graph.w[graph.right[i]]
             if bb != 0:
                 var_right = ww/bb
             else:
@@ -90,5 +101,7 @@ if __name__ == '__main__':
     output+= str(graph.R)
     if debug: print(50*'*')
     print(output) 
-    if debug: print("--- %s micro seconds ---" % ((time.time() - start_time)*1000000.0))
- 
+    if debug: print("--- %s seconds ---" % ((time.time() - start_time)))
+    # print(graph.counter)
+    # print(graph.b)
+    # print(graph.w)
