@@ -91,5 +91,4 @@ if __name__ == '__main__':
     if debug: print(50*'*')
     print(output) 
     if debug: print("--- %s micro seconds ---" % ((time.time() - start_time)*1000000.0))
-
-    
+ 

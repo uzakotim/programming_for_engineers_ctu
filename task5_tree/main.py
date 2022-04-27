@@ -1,4 +1,8 @@
 import time
+<<<<<<< HEAD
+=======
+
+>>>>>>> 05f5386bb7d4af339cbed9d4e91db077d18f0bb4
 
 class Node:
     def __init__(self,key,depth,SR):
@@ -104,11 +108,17 @@ class Tree:
 
     # TASK 5
     def isMinimal(self,node, key):
+<<<<<<< HEAD
         if node == None: return True
         if node.key >= key: 
             return True and (self.isMinimal(node.left,key) and self.isMinimal(node.right,key))
         if node.key < key:  
             return False and (self.isMinimal(node.left,key) and self.isMinimal(node.right,key))
+=======
+        if node == None:    return True
+        if node.key >= key: return True  and (self.isMinimal(node.left,key) and self.isMinimal(node.right,key))
+        if node.key < key:  return False and (self.isMinimal(node.left,key) and self.isMinimal(node.right,key))
+>>>>>>> 05f5386bb7d4af339cbed9d4e91db077d18f0bb4
 
     def sumKeysMinimal(self,node):
         if node == None: return
@@ -272,6 +282,7 @@ if __name__ == '__main__':
         current+=1
 
     output = ''
+<<<<<<< HEAD
 
 
     sumCosts = 0
@@ -280,6 +291,26 @@ if __name__ == '__main__':
     
     output += str(sumCosts)
     output+= '\n'
+=======
+    # t.sumAllCosts += t.root.key
+    # output += str(t.sumAllCosts)
+    # output+= '\n'
+    
+    # t.sumKeys(t.root)
+    # output+= str(t.disbalance(t.root))
+    # output+= '\n'
+    
+    # t.countTwoNodes(t.root)
+    # output+= str(t.sumKeys2Balanced(t.root))
+    # output+= '\n'
+    
+    # t.countSiblings(t.root)
+    # output+=str(t.counterSiblings)
+    # output+= '\n'
+ 
+    # output += str(t.sumKeysMinimal(t.root))
+    # output+= '\n'
+>>>>>>> 05f5386bb7d4af339cbed9d4e91db077d18f0bb4
 
     # t.sumKeys(t.root)
     # output+= str(t.disbalance(t.root))
@@ -290,6 +321,7 @@ if __name__ == '__main__':
     # output += str(t.sumTwoBalanced)
     # output+= '\n'
     
+<<<<<<< HEAD
     # output+=str(t.counterSiblings)
     # output+= '\n'
  
@@ -307,6 +339,13 @@ if __name__ == '__main__':
     # output += str(t.counterL1)
     # output+= '\n'
  
+=======
+    # t.countOnlyLeft(t.root)
+    # t.countL1(t.root)
+    # output += str(t.counterL1)
+    # output+= '\n'
+ 
+>>>>>>> 05f5386bb7d4af339cbed9d4e91db077d18f0bb4
     # t.customFindPathes(t.root,[])
     # output+=str(t.maximal)
  
