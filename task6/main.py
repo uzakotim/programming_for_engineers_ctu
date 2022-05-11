@@ -5,7 +5,7 @@
 from platform import node
 import re
 import time
-debug = False # set to True, in case you need to track execution time
+debug = True # set to True, in case you need to track execution time
 
 class Graph:
     def __init__(self, n,colors):
@@ -35,7 +35,6 @@ class Graph:
         return self.w[head]
 
 if __name__ == '__main__':
-    if debug: start_time = time.time()
 #------------------------------------------------------------------------
 #   Input and graph building                                            |
 #------------------------------------------------------------------------
@@ -54,6 +53,7 @@ if __name__ == '__main__':
 #------------------------------------------------------------------------
 #   If statements that compare the white,black,wwhite and bblack values |
 #------------------------------------------------------------------------   
+    if debug: start_time = time.time()
     graph.countWhite(0)
     graph.countBlack(0)
 
