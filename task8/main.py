@@ -1,7 +1,4 @@
-
-from doctest import OutputChecker
 import fileinput
-import numpy as np
 
 class Tile:
     def __init__(self):
@@ -47,11 +44,12 @@ def makeTiles(input_list):
 
     tiles.append(new_tile)
     return tiles
+
 def makeBlocks(tiles,block_width):
     counter = 1
     l_blocks = []
     block = []
-
+    
     i =0 
     while (i < len(tiles)):
         counter += tiles[i].widthValue + 1
@@ -70,11 +68,13 @@ def makeBlocks(tiles,block_width):
 
 def printBlocks(l_block):
     output= ''
+    
     border_prev = []
     border_prev.append(1)
     for tile in l_block[0]:
         border_prev+=[0 for _ in range(tile.widthValue)]
         border_prev+=[1]
+    
     
     for block in l_block:
         height = 0
@@ -146,14 +146,9 @@ def main():
     tiles = makeTiles(input_list)
     tiles = calculateParameters(tiles)
     l_blocks = makeBlocks(tiles,block_width)
-
-
     output = ''
     output = printBlocks(l_blocks)
     print(output)
-
-    
-
     
 if __name__ == '__main__':
         main()
