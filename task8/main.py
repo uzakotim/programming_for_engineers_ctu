@@ -1,8 +1,7 @@
 
+from doctest import OutputChecker
 import fileinput
-
-from numpy import block, tile
-from yaml import BlockSequenceStartToken
+import numpy as np
 
 class Tile:
     def __init__(self):
@@ -66,19 +65,80 @@ def makeBlocks(tiles,block_width):
         i+=1
     l_blocks.append(block)
 
-
-
-    # for tile in tiles:
-    #     counter += tile.widthValue + 1
-    #     if counter<=block_width:
-    #         block.append(tile)
-    #         print(tile.text)
-    #     else:
-    #         print("Block!")
-    #         l_blocks.append(block)
-    #         block = []
-    #         counter = 1
     return l_blocks
+
+
+def printBlocks(l_block):
+    output= ''
+    border_prev = []
+    border_prev.append(1)
+    for tile in l_block[0]:
+        border_prev+=[0 for _ in range(tile.widthValue)]
+        border_prev+=[1]
+    
+    for block in l_block:
+        height = 0
+
+        for tile in block:
+            if height<tile.heightValue:
+                height = tile.heightValue  
+
+        # Pring Border
+        border = []
+        border.append(1)
+        for tile in block:
+            border+=[0 for _ in range(tile.widthValue)]
+            border+=[1]
+        
+        # Combining previous and current borders
+        new_border = []
+        for i in range(max(len(border),len(border_prev))):
+                try:
+                    new_border.append(border[i]+border_prev[i])
+                except:
+                    try:
+                        new_border.append(border[i])
+                    except:
+                        new_border.append(border_prev[i])
+
+
+
+        # Conversion
+        for i in new_border:
+            if i > 0:
+                output+='+'
+            else:
+                output+='-'
+        output+='\n'
+
+        # Pring block information
+        lines = []
+
+        for i in reversed(range(height)): 
+            line = '|'
+            for tile in block:
+                try:
+                    l_word = len(tile.text[::-1][i])
+                    if l_word < tile.widthValue:
+                        line+=(tile.widthValue-l_word)*' '
+                    line+= tile.text[::-1][i]
+                except:
+                    line += tile.widthValue*' '
+                line+='|'
+            lines.append(line)
+
+        for line in lines:
+            output+=line
+            output+='\n'
+        border_prev = border
+        # ------------------------------
+    # Conversion
+    for i in border_prev:
+        if i > 0:
+            output+='+'
+        else:
+            output+='-'
+    return output
 
 def main():
     block_width= int(input())
@@ -87,13 +147,10 @@ def main():
     tiles = calculateParameters(tiles)
     l_blocks = makeBlocks(tiles,block_width)
 
-    # check if consistent
-    for block in l_blocks:
-        print("Block")
-        for tile in block:
-            print(tile.text)
 
-
+    output = ''
+    output = printBlocks(l_blocks)
+    print(output)
 
     
 

@@ -1,15 +1,5 @@
-['ab']
-['mn', 'kl', 'hij', 'cdefg']
-['opq']
-Block!
-['wx', 'rstuv']
-['23', 'yz01']
-['89', '4567']
-Block
-['ab']
-['mn', 'kl', 'hij', 'cdefg']
-['opq']
-Block
-['wx', 'rstuv']
-['23', 'yz01']
-['89', '4567']
+|  |   mn|   |
+|  |   kl|   |
+|  |  hij|   |
+|ab|cdefg|opq|
+
